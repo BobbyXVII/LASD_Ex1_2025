@@ -1,4 +1,3 @@
-
 #ifndef MAPPABLE_HPP
 #define MAPPABLE_HPP
 
@@ -20,8 +19,10 @@ template <typename Data>
 class MappableContainer : virtual public TraversableContainer<Data> {
 
 private:
+  // ...
 
 protected:
+  // ...
 
 public:
 
@@ -39,8 +40,8 @@ public:
   /* ************************************************************************ */
 
   // Comparison operators
-  bool operator==(const MappableContainer &) const noexcept;
-  bool operator!=(const MappableContainer &) const noexcept;
+  bool operator==(const MappableContainer &) const noexcept = delete;
+  bool operator!=(const MappableContainer &) const noexcept = delete;
 
   /* ************************************************************************ */
 
@@ -48,19 +49,20 @@ public:
 
   using MapFun = std::function<void(Data &)>;
 
-  // type Map(argument) specifiers;
+  virtual void Map(MapFun) = 0;
 
 };
 
 /* ************************************************************************** */
 
 template <typename Data>
-class PreOrderMappableContainer : virtual public MappableContainer<Data>,
-  virtual public PreOrderTraversableContainer<Data> {
+class PreOrderMappableContainer : virtual public MappableContainer<Data>, virtual public PreOrderTraversableContainer<Data> {
 
 private:
+  // ...
 
 protected:
+  // ...
 
 public:
 
@@ -70,16 +72,16 @@ public:
   /* ************************************************************************ */
 
   // Copy assignment
-  PreOrderMappableContainer & operator(const PreOrderMappableContainer &) = delete;
+  PreOrderMappableContainer & operator=(const PreOrderMappableContainer &) = delete;
 
   // Move assignment
-  PreOrderMappableContainer & operator(PreOrderMappableContainer &&) noexcept = delete;
+  PreOrderMappableContainer & operator=(PreOrderMappableContainer &&) noexcept = delete;
 
   /* ************************************************************************ */
 
   // Comparison operators
-  bool operator==(const PreOrderMappableContainer &) const noexcept;
-  bool operator!=(const PreOrderMappableContainer &) const noexcept;
+  bool operator==(const PreOrderMappableContainer &) const noexcept = delete;
+  bool operator!=(const PreOrderMappableContainer &) const noexcept = delete;
 
   /* ************************************************************************ */
 
@@ -87,25 +89,28 @@ public:
 
   using typename MappableContainer<Data>::MapFun;
 
-  // type PreOrderMap(argument) specifiers;
+  virtual void PreOrderMap(MapFun) = 0;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from MappableContainer)
 
-  // type Map(argument) specifiers; // Override MappableContainer member
+  void Map(MapFun fun) override {
+    PreOrderMap(fun);
+  }
 
 };
 
 /* ************************************************************************** */
 
 template <typename Data>
-class PostOrderMappableContainer : virtual public MappableContainer<Data>,
-  PostOrderTraversableContainer<Data> {
+class PostOrderMappableContainer : virtual public MappableContainer<Data>, virtual public PostOrderTraversableContainer<Data> {
 
 private:
+  // ...
 
 protected:
+  // ...
 
 public:
 
@@ -115,30 +120,32 @@ public:
   /* ************************************************************************ */
 
   // Copy assignment
-  PostOrderMappableContainer &operator=(const PostOrderMappableContainer &) = delete;
+  PostOrderMappableContainer & operator=(const PostOrderMappableContainer &) = delete;
 
   // Move assignment
-  PostOrderMappableContainer &operator=(PostOrderMappableContainer &&) noexcept = delete;
+  PostOrderMappableContainer & operator=(PostOrderMappableContainer &&) noexcept = delete;
 
   /* ************************************************************************ */
 
   // Comparison operators
-  bool operator==(const PostOrderMappableContainer &) const noexcept;
-  bool operator!=(const PostOrderMappableContainer &) const noexcept;
+  bool operator==(const PostOrderMappableContainer &) const noexcept = delete;
+  bool operator!=(const PostOrderMappableContainer &) const noexcept = delete;
 
   /* ************************************************************************ */
 
   // Specific member function
 
-  // using typename MappableContainer<Data>::MapFun;
+  using typename MappableContainer<Data>::MapFun;
 
-  // type PostOrderMap(argument) specifiers;
+  virtual void PostOrderMap(MapFun) = 0;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from MappableContainer)
 
-  // type Map(argument) specifiers; // Override MappableContainer member
+  inline void Map(MapFun fun) override {
+    PostOrderMap(fun);
+  }
 
 };
 
