@@ -1,4 +1,3 @@
-
 namespace lasd {
 
 /* ************************************************************************** */
@@ -67,7 +66,7 @@ inline bool DictionaryContainer<Data>::RemoveSome(const TraversableContainer<Dat
         }
     );
     return some;
-};
+}
 /* ************************************************************************** */
 
 }
