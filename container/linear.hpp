@@ -5,6 +5,9 @@
 /* ************************************************************************** */
 
 #include "mappable.hpp"
+#include <algorithm>
+#include <climits>
+#include <random>
 
 /* ************************************************************************** */
 
@@ -13,7 +16,9 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class LinearContainer : virtual public PreOrderTraversableContainer<Data>, virtual public PostOrderTraversableContainer<Data>{
+class LinearContainer 
+: virtual public PreOrderTraversableContainer<Data>, 
+virtual public PostOrderTraversableContainer<Data> {
 
 private:
 

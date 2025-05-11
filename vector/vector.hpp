@@ -16,8 +16,6 @@ class Vector : virtual public MutableLinearContainer<Data>, virtual public Resiz
 
 private:
 
-  // Nessun membro privato aggiuntivo
-
 protected:
 
   using Container::size;
@@ -30,16 +28,13 @@ public:
   Vector() = default;
 
   // Constructor with initial size
-  Vector(const unsigned long initialSize) {
-    elements = new Data[initialSize]{};
-    size = initialSize;
-  }
+  Vector(const unsigned long);
 
   // Constructor from TraversableContainer
-  inline Vector(const TraversableContainer<Data>&);
+  Vector(const TraversableContainer<Data>&);
 
   // Constructor from MappableContainer (rvalue)
-  inline Vector(MappableContainer<Data>&&);
+  Vector(MappableContainer<Data>&&);
 
   // Copy constructor
   Vector(const Vector<Data>&);
@@ -48,13 +43,13 @@ public:
   Vector(Vector<Data>&&) noexcept;
 
   // Destructor
-  virtual ~Vector() { delete[] elements; }
+  virtual ~Vector();
 
   // Copy assignment
-  inline Vector<Data>& operator=(const Vector<Data>&);
+  Vector<Data>& operator=(const Vector<Data>&);
 
   // Move assignment
-  inline Vector<Data>& operator=(Vector<Data>&&) noexcept;
+  Vector<Data>& operator=(Vector<Data>&&) noexcept;
 
   // Comparison operators
   bool operator==(const Vector<Data>&) const noexcept;
@@ -93,11 +88,8 @@ class SortableVector : virtual public Vector<Data>, virtual public SortableLinea
 
 private:
 
-  // Nessun membro privato aggiuntivo
-
 protected:
 
-  // Nessun using necessario qui, ereditato da Vector
   using Container::size;
 
 public:
@@ -106,28 +98,28 @@ public:
   SortableVector() = default;
 
   // Constructor with initial size
-  inline SortableVector(unsigned long initialSize) : Vector<Data>(initialSize) {}
+  SortableVector(unsigned long initialSize) : Vector<Data>(initialSize) {}
 
   // Constructor from TraversableContainer
-  inline SortableVector(const TraversableContainer<Data>& container) : Vector<Data>(container) {}
+  SortableVector(const TraversableContainer<Data>& container) : Vector<Data>(container) {}
 
   // Constructor from MappableContainer (rvalue)
-  inline SortableVector(MappableContainer<Data>&& container) : Vector<Data>(std::move(container)) {}
+  SortableVector(MappableContainer<Data>&& container) : Vector<Data>(std::move(container)) {}
 
   // Copy constructor
-  inline SortableVector(const SortableVector<Data>& vector) : Vector<Data>(vector) {}
+  SortableVector(const SortableVector<Data>& vector) : Vector<Data>(vector) {}
 
   // Move constructor
-  inline SortableVector(SortableVector<Data>&& vector) noexcept : Vector<Data>(std::move(vector)) {}
+  SortableVector(SortableVector<Data>&& vector) noexcept : Vector<Data>(std::move(vector)) {}
 
   // Destructor
   virtual ~SortableVector() = default;
 
   // Copy assignment
-  inline SortableVector<Data>& operator=(const SortableVector<Data>& vector);
+  SortableVector<Data>& operator=(const SortableVector<Data>& vector);
 
   // Move assignment
-  inline SortableVector<Data>& operator=(SortableVector<Data>&& vector) noexcept;
+  SortableVector<Data>& operator=(SortableVector<Data>&& vector) noexcept;
 
 protected:
 
