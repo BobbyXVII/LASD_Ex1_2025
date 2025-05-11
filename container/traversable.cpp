@@ -3,64 +3,65 @@ namespace lasd {
 
   /* ************************************************************************** */
   
-  template <typename Data>
-  template <typename Accumulator>
-  inline Accumulator TraversableContainer<Data>::Fold(FoldFun<Accumulator> fun, Accumulator acc) const {
-    Traverse(
-      [fun, &acc](const Data& dat) {
-        acc = fun(dat, acc);
-      }
-    );
-    return acc;
-  }
-  
-  template <typename Data>
-  inline bool TraversableContainer<Data>::Exists(const Data& val) const noexcept {
-    bool exists = false;
-    Traverse(
-      [&exists, &val](const Data& dat) {
-        if (dat == val) {
-          exists = true;
-        }
-      }
-    );
-    return exists;
-  }
-  
+  //TraversableContainer
   /* ************************************************************************** */
   
+  template <typename Data, typename Accumulator>
+  using FoldFun = typename TraversableContainer<Data>::template FoldFun<Accumulator>;
+  
+  //Fold
   template <typename Data>
   template <typename Accumulator>
-  inline Accumulator PreOrderTraversableContainer<Data>::PreOrderFold(FoldFun<Accumulator> fun, Accumulator acc) const {
-    PreOrderTraverse(
-      [fun, &acc](const Data& dat) {
-        acc = fun(dat, acc);
-      }
-    );
-    return acc;
-  }
+  inline Accumulator TraversableContainer<Data>::Fold(FoldFun<Accumulator> fun, Accumulator accumulator) const noexcept {
+      Traverse(
+          [fun, &accumulator](const Data & data) { 
+              accumulator = fun(data, accumulator);
+          }
+      );
+      return accumulator;
+  } 
   
+  // Exists
   template <typename Data>
-  inline void PreOrderTraversableContainer<Data>::Traverse(TraverseFun fun) const {
-    PreOrderTraverse(fun);
+  inline bool TraversableContainer<Data>::Exists(const Data & value) const noexcept {
+      bool exists = false;
+      Traverse(
+          [value, &exists](const Data & data) {
+              exists |= (data == value); 
+          }
+      );
+      return exists; 
   }
   
+  
+  
+  //PreOrderTraversableContainer
   /* ************************************************************************** */
   
+  //PreOrderFold
+  template <typename Data>
+    template <typename Accumulator>
+    inline Accumulator PreOrderTraversableContainer<Data>::PreOrderFold(FoldFun<Accumulator> func, Accumulator accumulator) const
+    {
+      PreOrderTraverse([&accumulator, func](const Data &currData)
+                       { accumulator = func(currData, accumulator); });
+      return accumulator;
+    };
+  
+  
+  //PostOrderTravesableContainer
+  /* ************************************************************************** */
+  
+  //PostOrderFold
   template <typename Data>
   template <typename Accumulator>
-  inline Accumulator PostOrderTraversableContainer<Data>::PostOrderFold(FoldFun<Accumulator> fun, Accumulator acc) const {
-    PostOrderTraverse(
-      [fun, &acc](const Data& dat) {
-        acc = fun(dat, acc);
-      }
-    );
-    return acc;
-  }
+  inline Accumulator PostOrderTraversableContainer<Data>::PostOrderFold(FoldFun<Accumulator> func, Accumulator accumulator) const
+    {
+      PostOrderTraverse([&accumulator, &func](const Data &currData)
+                        { accumulator = func(currData, accumulator); });
+      return accumulator;
+    };
   
-  template <typename Data>
-  inline void PostOrderTraversableContainer<Data>::Traverse(TraverseFun fun) const {
-    PostOrderTraverse(fun);
-  }
   
   }
+  

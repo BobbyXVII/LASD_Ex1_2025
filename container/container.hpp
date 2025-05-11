@@ -71,6 +71,7 @@ private:
 
 protected:
 
+  using Container::size;
 
 public:
 
@@ -111,7 +112,7 @@ private:
 
 protected:
 
-  // ...
+  using Container::size;
 
 public:
 
@@ -136,7 +137,7 @@ public:
 
   // Specific member functions
 
-  virtual void Resize(unsigned long) = 0;
+  virtual void Resize(unsigned long newSize) = 0;
 
   /* ************************************************************************ */
 

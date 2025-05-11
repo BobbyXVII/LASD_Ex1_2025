@@ -95,7 +95,7 @@ public:
 
   // Specific member function (inherited from MappableContainer)
 
-  inline void Map(MapFun fun) override;
+  inline void  Map(const MapFun fun) override; // Override MappableContainer member
 
 };
 
@@ -141,7 +141,8 @@ public:
 
   // Specific member function (inherited from MappableContainer)
 
-  inline void Map(const MapFun fun) override;
+  inline void  Map(const MapFun fun) override; // Override MappableContainer member
+
 
 };
 

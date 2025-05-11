@@ -54,7 +54,7 @@ public:
   using FoldFun = std::function<Accumulator(const Data &, const Accumulator &)>;
 
   template <typename Accumulator>
-  inline Accumulator Fold(FoldFun<Accumulator> func, Accumulator base) const;
+  inline Accumulator Fold(FoldFun<Accumulator> func, Accumulator base) const noexcept;
 
   /* ************************************************************************ */
 
@@ -71,7 +71,7 @@ private:
   // ...
 
 protected:
-  // Default constructor
+  // ...
 
 public:
   // Destructor
@@ -111,7 +111,7 @@ public:
 
   // Specific member function (inherited from TraversableContainer)
 
-  inline void Traverse(TraverseFun) const override;
+  inline void Traverse(const TraverseFun fun) const override { PreOrderTraverse(fun); }  // Override TraversableContainer member
 };
 
 /* ************************************************************************** */
@@ -162,7 +162,7 @@ public:
   /* ************************************************************************ */
 
   // Specific member function (inherited from TraversableContainer)
-  inline void Traverse(TraverseFun) const override;
+  inline void Traverse(const TraverseFun fun) const override { PostOrderTraverse(fun); }; // Override TraversableContainer member
 };
 
 }

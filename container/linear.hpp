@@ -1,4 +1,3 @@
-
 #ifndef LINEAR_HPP
 #define LINEAR_HPP
 
@@ -18,7 +17,7 @@ namespace lasd {
 template <typename Data>
 class LinearContainer 
 : virtual public PreOrderTraversableContainer<Data>, 
-virtual public PostOrderTraversableContainer<Data> {
+  virtual public PostOrderTraversableContainer<Data> {
 
 private:
 
@@ -51,11 +50,11 @@ public:
 
   // Specific member functions
 
-  virtual const Data & operator[](const ulong) const = 0;
+  virtual const Data & operator[](unsigned long) const = 0; // (non-mutable version; concrete function must throw std::out_of_range when out of range)
 
-  virtual const Data & Front() const;
+  virtual const Data & Front() const; // (non-mutable version; concrete function must throw std::length_error when empty)
 
-  virtual const Data & Back() const;
+  virtual const Data & Back() const; // (non-mutable version; concrete function must throw std::length_error when empty)
 
   /* ************************************************************************ */
 
@@ -63,19 +62,19 @@ public:
 
   using typename TraversableContainer<Data>::TraverseFun;
 
-  void Traverse(TraverseFun) const override;
+  inline void Traverse(TraverseFun) const override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PreOrderTraversableContainer)
 
-  void PreOrderTraverse(TraverseFun) const override;
+  inline void PreOrderTraverse(TraverseFun) const override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PostOrderTraversableContainer)
 
-  void PostOrderTraverse(TraverseFun) const override;
+  inline void PostOrderTraverse(TraverseFun) const override;
 
 };
 
@@ -83,12 +82,13 @@ public:
 
 template <typename Data>
 class MutableLinearContainer: virtual public LinearContainer<Data>,
- virtual public PreOrderMappableContainer<Data>,
+  virtual public PreOrderMappableContainer<Data>,
   virtual public PostOrderMappableContainer<Data> {
 
 private:
 
 protected:
+  using Container::size;
 
 public:
 
@@ -107,11 +107,11 @@ public:
 
   // Specific member functions
 
-  virtual Data & operator[](const ulong) = 0;
+  inline virtual Data & operator[](unsigned long) = 0;
 
-  virtual Data & Front() = 0;
+  virtual Data &Front() = 0;
 
-  virtual Data & Back() = 0;
+  virtual Data &Back() = 0;
 
   /* ************************************************************************ */
 
@@ -119,19 +119,19 @@ public:
 
   using typename MappableContainer<Data>::MapFun;
 
-  inline void Map(MapFun) override;
+  inline void Map(MapFun fun) override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PreOrderMappableContainer)
 
-  inline void PreOrderMap(MapFun) override;
+  void PreOrderMap(MapFun) override;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PostOrderMappableContainer)
 
-  inline void PostOrderMap(MapFun) override;
+  void PostOrderMap(MapFun) override;
 
 };
 
@@ -141,6 +141,8 @@ class SortableLinearContainer : virtual public MutableLinearContainer<Data> {
 private:
 
 protected:
+
+  using Container::size;
 
 public:
 
@@ -160,10 +162,6 @@ public:
   // Specific member function
 
   virtual void Sort() = 0;
-
-protected:
-
-  // Auxiliary member functions
 
 };
 
