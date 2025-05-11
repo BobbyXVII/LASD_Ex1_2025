@@ -4,8 +4,8 @@ namespace lasd {
     
     template <typename Data>
     bool LinearContainer<Data>::operator==(const LinearContainer<Data> & con) const noexcept {
-        if (size == con.size) {
-            for (ulong index = 0; index < size; ++index) {
+        if (Container::size == con.Container::size) {
+            for (ulong index = 0; index < Container::size; ++index) {
                 if (operator[](index) != con.operator[](index)) {
                     return false;
                 }
@@ -32,7 +32,7 @@ namespace lasd {
     
     template <typename Data>
     inline const Data & LinearContainer<Data>::Back() const {
-        return operator[](size - 1);
+        return operator[](Container::size - 1);
     }
     
     /* ************************************************************************** */
@@ -50,7 +50,7 @@ namespace lasd {
     
     template <typename Data>
     inline void LinearContainer<Data>::PreOrderTraverse(TraverseFun fun) const {
-        for (ulong index = 0; index < size; ++index) {
+        for (ulong index = 0; index < Container::size; ++index) {
             fun(operator[](index));
         }
     }
@@ -61,7 +61,7 @@ namespace lasd {
     
     template <typename Data>
     inline void LinearContainer<Data>::PostOrderTraverse(TraverseFun fun) const {
-        ulong index = size;
+        ulong index = Container::size;
         while (index > 0) {
             fun(operator[](--index));
         }
@@ -82,7 +82,7 @@ namespace lasd {
     
     template <typename Data>
     inline void MutableLinearContainer<Data>::PreOrderMap(MapFun fun) {
-        for (unsigned long index = 0; index < size; ++index) {
+        for (unsigned long index = 0; index < Container::size; ++index) {
             fun(operator[](index));
         }
     }
@@ -93,7 +93,7 @@ namespace lasd {
     
     template <typename Data>
     inline void MutableLinearContainer<Data>::PostOrderMap(MapFun fun) {
-        unsigned long index = size;
+        unsigned long index = Container::size;
         while (index > 0) {
             fun(operator[](--index));
         }
