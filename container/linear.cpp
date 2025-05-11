@@ -3,22 +3,22 @@ namespace lasd {
   /* ************************************************************************** */
   
   template <typename Data>
-  bool LinearContainer<Data>::operator==(
-      const LinearContainer<Data> &con) const noexcept {
-    if (size != con.size) { return false; }
-  
-    for (unsigned int i = 0; i < size; ++i) {
-      if ((*this)[i] != con[i]) {
-        return false;
+  bool LinearContainer<Data>::operator==(const LinearContainer<Data>& con) const noexcept {
+      if (size != con.size) {
+          return false;
       }
-    }
-    return true;
+  
+      for (unsigned long i = 0; i < size; ++i) {
+          if ((*this)[i] != con[i]) {
+              return false;
+          }
+      }
+      return true;
   }
   
   template <typename Data>
-  bool LinearContainer<Data>::operator!=(
-      const LinearContainer<Data> &con) const noexcept {
-    return !(*this == con);
+  bool LinearContainer<Data>::operator!=(const LinearContainer<Data>& con) const noexcept {
+      return !(*this == con);
   }
   
   /* ************************************************************************** */
@@ -27,20 +27,20 @@ namespace lasd {
   
   // Front()
   template <typename Data> 
-  inline const Data &LinearContainer<Data>::Front() const {
-    if (size == 0) {
-      throw std::out_of_range("Empty structure.");
-    }
-    return (*this)[0];
+  inline const Data& LinearContainer<Data>::Front() const {
+      if (size == 0) {
+          throw std::length_error("Empty structure.");
+      }
+      return (*this)[0];
   }
   
   // Back()
   template <typename Data>
-  inline const Data &LinearContainer<Data>::Back() const {
-    if (size == 0) {
-      throw std::out_of_range("Empty structure.");
-    }
-    return (*this)[size - 1];
+  inline const Data& LinearContainer<Data>::Back() const {
+      if (size == 0) {
+          throw std::length_error("Empty structure.");
+      }
+      return (*this)[size - 1];
   }
   
   /* ************************************************************************** */
@@ -58,9 +58,9 @@ namespace lasd {
   
   template <typename Data>
   void LinearContainer<Data>::PreOrderTraverse(const TraverseFun fun) const {
-    for (unsigned int i = 0; i < size; ++i) {
-      fun((*this)[i]);
-    }
+      for (unsigned long i = 0; i < size; ++i) {
+          fun((*this)[i]);
+      }
   }
   
   /* ************************************************************************** */
@@ -69,9 +69,9 @@ namespace lasd {
   
   template <typename Data>
   void LinearContainer<Data>::PostOrderTraverse(const TraverseFun fun) const {
-    for (unsigned int i = size; i > 0;) {
-      fun((*this)[--i]);
-    }
+      for (unsigned long i = size; i > 0;) {
+          fun((*this)[--i]);
+      }
   }
   
   /* ************************************************************************** */
@@ -80,24 +80,22 @@ namespace lasd {
   
   // Front()
   template <typename Data> 
-  Data &MutableLinearContainer<Data>::Front() {
-    if (size == 0) {
-      throw std::out_of_range("Empty structure.");
-    }
-    return (*this)[0];
+  Data& MutableLinearContainer<Data>::Front() {
+      if (size == 0) {
+          throw std::length_error("Empty structure.");
+      }
+      return (*this)[0];
   }
   
   // Back()
   template <typename Data> 
-  Data &MutableLinearContainer<Data>::Back() {
-    if (size == 0) {
-      throw std::out_of_range("Empty structure.");
-    }
-    return (*this)[size - 1];
+  Data& MutableLinearContainer<Data>::Back() {
+      if (size == 0) {
+          throw std::length_error("Empty structure.");
+      }
+      return (*this)[size - 1];
   }
   
-  // Override function
-  /* ************************************************************************** */
   // Override MappableContainer member
   template <typename Data> 
   void MutableLinearContainer<Data>::Map(MapFun fun) {
@@ -110,8 +108,8 @@ namespace lasd {
   
   template <typename Data> 
   void MutableLinearContainer<Data>::PreOrderMap(MapFun fun) {
-      for (unsigned int i = 0; i < size; ++i) {
-        fun((*this)[i]);
+      for (unsigned long i = 0; i < size; ++i) {
+          fun((*this)[i]);
       }
   }
   
@@ -121,14 +119,12 @@ namespace lasd {
   
   template <typename Data> 
   void MutableLinearContainer<Data>::PostOrderMap(MapFun fun) {
-      for (unsigned int i = size; i > 0;) {
-        fun((*this)[--i]);
+      for (unsigned long i = size; i > 0;) {
+          fun((*this)[--i]);
       }
   }
   
   /* ************************************************************************** */
   
-  // SortableLinearContainer
-  
-  }
+  } // namespace lasd
   
