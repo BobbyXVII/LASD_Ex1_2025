@@ -113,7 +113,7 @@ public:
   SortableLinearContainer & operator=(SortableLinearContainer &&) noexcept = delete;
 
   // Specific member function
-  virtual void Sort() = 0;
+  virtual void Sort() noexcept;
 };
 
 /* ************************************************************************** */
