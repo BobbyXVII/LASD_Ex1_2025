@@ -1,3 +1,4 @@
+
 namespace lasd {
 
   /* ************************************************************************** */
@@ -126,19 +127,18 @@ namespace lasd {
   
   /* ************************************************************************** */
 
-  template<typename Data>
-    void SortableLinearContainer<Data>::Sort(){
-        // Insertion sort
-        for (ulong i = 1; i < size; i++) {
-            Data key = std::move(operator[](i));
-            long j = i - 1;
-            while (j >= 0 && operator[](j) > key) {
-                operator[](j + 1) = std::move(operator[](j));
-                j--;
-            }
-            operator[](j + 1) = std::move(key);
+  template <typename Data>
+void SortableLinearContainer<Data>::Sort() noexcept {
+    for (long i = 1; i < static_cast<long>(this->Size()); ++i) {
+        Data key = std::move((*this)[i]);
+        long j = i - 1;
+        while (j >= 0 && (*this)[j] > key) {
+            (*this)[j + 1] = std::move((*this)[j]);
+            --j;
         }
+        (*this)[j + 1] = std::move(key);
     }
+}
   
   } // namespace lasd
   
