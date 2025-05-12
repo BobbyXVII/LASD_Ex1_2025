@@ -71,6 +71,9 @@ protected:
   using Container::size;
 
 public:
+
+  using LinearContainer<Data>::operator[];
+  
   // Destructor
   virtual ~MutableLinearContainer() = default;
 
