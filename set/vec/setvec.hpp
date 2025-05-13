@@ -18,6 +18,9 @@ namespace lasd {
     protected:
         using Container::size;
 
+        // Aggiungiamo solo questo campo
+        unsigned long capacity = 0; // Capacità allocata dell'array
+
         // Utility function to maintain sorted order
         ulong FindIndex(const Data &) const;
 

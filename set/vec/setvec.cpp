@@ -5,9 +5,8 @@ namespace lasd {
     // Auxiliary protected functions
     template <typename Data>
     ulong SetVec<Data>::FindIndex(const Data& data) const {
-      // Ricerca binaria per trovare l'indice di un elemento
       if (size == 0 || Vector<Data>::elements == nullptr) {
-        return size;  // Elemento non trovato
+        return size;
       }
     
       ulong left = 0;
@@ -62,110 +61,117 @@ namespace lasd {
       return left;
     }
     
+    // ShiftRight
     template <typename Data>
     void SetVec<Data>::ShiftRight(ulong index) {
-      ulong newSize = size + 1;
-      Data* newElements = new Data[newSize]{};
-    
-      // Copia gli elementi prima del punto di inserimento
-      for (ulong i = 0; i < index && i < size; i++) {
-        newElements[i] = Vector<Data>::elements[i];
-      }
-    
-      // Copia l'elemento da inserire (shift ->)
-      for (ulong i = index; i < size; i++) {
-        newElements[i + 1] = Vector<Data>::elements[i];
-      }
-    
-      // Rimpiazza il vecchio array
-      delete[] Vector<Data>::elements;
-      Vector<Data>::elements = newElements;
-      size = newSize;
+        if (size == capacity || Vector<Data>::elements == nullptr) {
+            capacity = (capacity == 0) ? 1 : capacity * 2;
+            
+            Data* newElements = new Data[capacity]{};
+            
+            for (ulong i = 0; i < index; i++) {
+                newElements[i] = Vector<Data>::elements[i];
+            }
+            
+            for (ulong i = size; i > index; i--) {
+                newElements[i] = Vector<Data>::elements[i-1];
+            }
+            
+            delete[] Vector<Data>::elements;
+            Vector<Data>::elements = newElements;
+        } else {
+            for (ulong i = size; i > index; i--) {
+                Vector<Data>::elements[i] = Vector<Data>::elements[i-1];
+            }
+        }
+        
+        size++;
     }
     
+    // ShiftLeft
     template <typename Data>
     void SetVec<Data>::ShiftLeft(ulong index) {
-      if (size == 0 || Vector<Data>::elements == nullptr) {
-        return;
-      }
-    
-      if (size == 1) {
-        // se c'è solo un elemento, lo rimuoviamo
-        delete[] Vector<Data>::elements;
-        Vector<Data>::elements = nullptr;
-        size = 0;
-        return;
-      }
-    
-      // Crea un nuovo array di dimensione size - 1
-      ulong newSize = size - 1;
-      Data* newElements = new Data[newSize]{};
-    
-      // Copia gli elementi prima del punto di rimozione
-      for (ulong i = 0; i < index && i < size; i++) {
-        newElements[i] = Vector<Data>::elements[i];
-      }
-    
-      // Copia gli elementi dopo il punto di rimozione (shift <-)
-      for (ulong i = index + 1; i < size; i++) {
-        newElements[i - 1] = Vector<Data>::elements[i];
-      }
-    
-      delete[] Vector<Data>::elements;
-      Vector<Data>::elements = newElements;
-      size = newSize;
+        if (size == 0) return;
+        
+        for (ulong i = index; i < size - 1; i++) {
+            Vector<Data>::elements[i] = Vector<Data>::elements[i+1];
+        }
+        
+        size--;
+        
+        if (size > 0 && size <= capacity / 4 && capacity > 1) {
+            capacity = capacity / 2;
+            Data* newElements = new Data[capacity]{};
+            
+            for (ulong i = 0; i < size; i++) {
+                newElements[i] = Vector<Data>::elements[i];
+            }
+            
+            delete[] Vector<Data>::elements;
+            Vector<Data>::elements = newElements;
+        }
     }
     
     // Specific constructors
     
     template <typename Data>
-    SetVec<Data>::SetVec(const TraversableContainer<Data>& container) : Vector<Data>() {
-      // Vettore temporaneo per raccogliere gli elementi
-      std::vector<Data> tempElements;
+    SetVec<Data>::SetVec(const TraversableContainer<Data>& container) 
+        : Vector<Data>(), capacity(0) {
+        std::vector<Data> tempElements;
     
-      container.Traverse([&tempElements](const Data& data) {
-        tempElements.push_back(data);
-      });
+        container.Traverse([&tempElements](const Data& data) {
+            tempElements.push_back(data);
+        });
     
-      // Inserimento degli elementi uno per uno per garantire l'ordinamento e l'unicità
-      for (const auto& data : tempElements) {
-        Insert(data);
-      }
+        for (const auto& data : tempElements) {
+            Insert(data);
+        }
     }
     
     template <typename Data>
-    SetVec<Data>::SetVec(MappableContainer<Data>&& container) : Vector<Data>() {
-      std::vector<Data> tempElements;
+    SetVec<Data>::SetVec(MappableContainer<Data>&& container)
+        : Vector<Data>(), capacity(0) {
+        std::vector<Data> tempElements;
     
-      container.Map([&tempElements](Data& data) {
-        tempElements.push_back(std::move(data));
-      });
+        container.Map([&tempElements](Data& data) {
+            tempElements.push_back(std::move(data));
+        });
     
-      for (auto& data : tempElements) {
-        Insert(std::move(data));
-      }
+        for (auto& data : tempElements) {
+            Insert(std::move(data));
+        }
     }
     
-    // Copy constructor
     template <typename Data>
-    SetVec<Data>::SetVec(const SetVec<Data>& other) : Vector<Data>(other) {}
+    SetVec<Data>::SetVec(const SetVec<Data>& other)
+        : Vector<Data>(other), capacity(other.capacity) {
+    }
     
-    // Move constructor
     template <typename Data>
-    SetVec<Data>::SetVec(SetVec<Data>&& other) noexcept : Vector<Data>(std::move(other)) {}
+    SetVec<Data>::SetVec(SetVec<Data>&& other) noexcept
+        : Vector<Data>(std::move(other)), capacity(other.capacity) {
+        other.capacity = 0;
+    }
     
     // Copy assignment
     template <typename Data>
     SetVec<Data>& SetVec<Data>::operator=(const SetVec<Data>& other) {
-      Vector<Data>::operator=(other);
-      return *this;
+        if (this != &other) {
+            Vector<Data>::operator=(other);
+            capacity = other.capacity;
+        }
+        return *this;
     }
     
     // Move assignment
     template <typename Data>
     SetVec<Data>& SetVec<Data>::operator=(SetVec<Data>&& other) noexcept {
-      Vector<Data>::operator=(std::move(other));
-      return *this;
+        if (this != &other) {
+            Vector<Data>::operator=(std::move(other));
+            capacity = other.capacity;
+            other.capacity = 0;
+        }
+        return *this;
     }
     
     // Comparison operators
@@ -187,7 +193,7 @@ namespace lasd {
         throw std::length_error("Empty set");
       }
     
-      return Vector<Data>::elements[0]; // Min e' il primo elemento in un set ordinato
+      return Vector<Data>::elements[0];
     }
     
     template <typename Data>
@@ -217,7 +223,7 @@ namespace lasd {
         throw std::length_error("Empty set");
       }
     
-      return Vector<Data>::elements[size - 1]; // Max e' l'ultimo elemento in un set ordinato
+      return Vector<Data>::elements[size - 1];
     }
     
     template <typename Data>
@@ -247,7 +253,6 @@ namespace lasd {
         throw std::length_error("Empty set");
       }
     
-      // Trov a l'indice del predecessore (elements[i] < data e elements[i+1] >= data)
       ulong index = FindInsertionIndex(data);
     
       if (index == 0) {
@@ -263,7 +268,6 @@ namespace lasd {
         throw std::length_error("Empty set");
       }
     
-      // Trova l'indice del predecessore (elements[i] < data e elements[i+1] >= data)
       ulong index = FindInsertionIndex(data);
     
       if (index == 0) {
@@ -282,7 +286,6 @@ namespace lasd {
         throw std::length_error("Empty set");
       }
     
-      // Trova l'indice del predecessore (elements[i] < data e elements[i+1] >= data)
       ulong index = FindInsertionIndex(data);
     
       if (index == 0) {
@@ -298,7 +301,6 @@ namespace lasd {
         throw std::length_error("Empty set");
       }
     
-      // Trova l'indice del successore (elements[i] > data)
       ulong index = FindInsertionIndex(data);
     
       if (index >= size || Vector<Data>::elements[index] == data) {
@@ -317,7 +319,6 @@ namespace lasd {
         throw std::length_error("Empty set");
       }
     
-      // Trova l'indice del successore (elements[i] > data)
       ulong index = FindInsertionIndex(data);
     
       if (index >= size || Vector<Data>::elements[index] == data) {
@@ -339,7 +340,6 @@ namespace lasd {
         throw std::length_error("Empty set");
       }
     
-      // Trova l'indice del successore (elements[i] > data)
       ulong index = FindInsertionIndex(data);
     
       if (index >= size || Vector<Data>::elements[index] == data) {
@@ -354,26 +354,26 @@ namespace lasd {
     
     // Specific member functions (inherited from DictionaryContainer)
     
+    // Insert
     template <typename Data>
     bool SetVec<Data>::Insert(const Data& data) {
-      // Controlla se l'elemento esiste già
-      if (size > 0 && Vector<Data>::elements != nullptr) {
-        ulong index = FindInsertionIndex(data);
-    
-        if (index < size && Vector<Data>::elements[index] == data) {
-          return false;
+        if (size > 0 && Vector<Data>::elements != nullptr) {
+            ulong index = FindInsertionIndex(data);
+            
+            if (index < size && Vector<Data>::elements[index] == data) {
+                return false;
+            }
+            
+            ShiftRight(index);
+            Vector<Data>::elements[index] = data;
+        } else {
+            capacity = 1;
+            Vector<Data>::elements = new Data[capacity]{};
+            Vector<Data>::elements[0] = data;
+            size = 1;
         }
-    
-        // Se non esiste, inseriscilo mantenendo l'ordinamento
-        ShiftRight(index);
-        Vector<Data>::elements[index] = data;
-      } else {
-        Vector<Data>::elements = new Data[1];
-        Vector<Data>::elements[0] = data;
-        size = 1;
-      }
-    
-      return true;
+        
+        return true;
     }
     
     template <typename Data>
@@ -385,7 +385,6 @@ namespace lasd {
           return false;
         }
     
-        // Se non esiste, inseriscilo mantenendo l'ordinamento
         ShiftRight(index);
         Vector<Data>::elements[index] = std::move(data);
       } else {
