@@ -4,6 +4,7 @@ namespace lasd {
   template <typename Data>
   void SetLst<Data>::InsertInOrder(const Data& data) {
     if (size == 0 || data <= head->val) {
+      // Lascia che InsertAtFront gestisca incremento di size
       this->InsertAtFront(data);
       return;
     }
@@ -17,12 +18,13 @@ namespace lasd {
     if (newNode->next == nullptr) {
       tail = newNode;
     }
-    size++;
+    size++; // Solo qui incrementiamo size
   }
 
   template <typename Data>
   void SetLst<Data>::InsertInOrder(Data&& data) {
     if (size == 0 || data <= head->val) {
+      // Lascia che InsertAtFront gestisca incremento di size
       this->InsertAtFront(std::move(data));
       return;
     }
@@ -36,7 +38,7 @@ namespace lasd {
     if (newNode->next == nullptr) {
       tail = newNode;
     }
-    size++;
+    size++; // Solo qui incrementiamo size
   }
 
   // Specific constructors
@@ -57,6 +59,7 @@ namespace lasd {
   // Copy constructor
   template <typename Data>
   SetLst<Data>::SetLst(const SetLst<Data>& other) : List<Data>() {
+    // Utilizziamo la traversata per copiare gli elementi in ordine
     other.Traverse([this](const Data& data) {
       this->Insert(data);
     });
@@ -192,9 +195,12 @@ namespace lasd {
     if (size == 0) throw std::length_error("Empty set");
     typename List<Data>::Node* pred = FindPointerToPredecessor(data);
     if (pred == nullptr) throw std::length_error("Predecessor not found");
+    
     Data value = pred->val;
+    
+    // Implementa la rimozione in modo sicuro
     if (pred == head) {
-      this->RemoveFromFront();
+      return this->FrontNRemove(); // Usa la funzione della classe base
     } else {
       typename List<Data>::Node* current = head;
       while (current->next != pred) {
@@ -215,8 +221,10 @@ namespace lasd {
     if (size == 0) throw std::length_error("Empty set");
     typename List<Data>::Node* pred = FindPointerToPredecessor(data);
     if (pred == nullptr) throw std::length_error("Predecessor not found");
+    
+    // Implementa la rimozione in modo sicuro
     if (pred == head) {
-      this->RemoveFromFront();
+      this->RemoveFromFront(); // Usa la funzione della classe base
     } else {
       typename List<Data>::Node* current = head;
       while (current->next != pred) {
@@ -244,9 +252,12 @@ namespace lasd {
     if (size == 0) throw std::length_error("Empty set");
     typename List<Data>::Node* succ = FindPointerToSuccessor(data);
     if (succ == nullptr) throw std::length_error("Successor not found");
+    
     Data value = succ->val;
+    
+    // Implementa la rimozione in modo sicuro
     if (succ == head) {
-      this->RemoveFromFront();
+      return this->FrontNRemove(); // Usa la funzione della classe base
     } else {
       typename List<Data>::Node* current = head;
       while (current->next != succ) {
@@ -267,8 +278,10 @@ namespace lasd {
     if (size == 0) throw std::length_error("Empty set");
     typename List<Data>::Node* succ = FindPointerToSuccessor(data);
     if (succ == nullptr) throw std::length_error("Successor not found");
+    
+    // Implementa la rimozione in modo sicuro
     if (succ == head) {
-      this->RemoveFromFront();
+      this->RemoveFromFront(); // Usa la funzione della classe base
     } else {
       typename List<Data>::Node* current = head;
       while (current->next != succ) {
@@ -305,16 +318,21 @@ namespace lasd {
       this->RemoveFromFront();
       return true;
     }
+    
     typename List<Data>::Node* current = head;
     while (current->next != nullptr && current->next->val != data) {
       current = current->next;
     }
+    
     if (current->next == nullptr) return false;
+    
     typename List<Data>::Node* temp = current->next;
     current->next = temp->next;
+    
     if (temp == tail) {
       tail = current;
     }
+    
     delete temp;
     size--;
     return true;
@@ -334,22 +352,27 @@ namespace lasd {
   template <typename Data>
   typename List<Data>::Node* SetLst<Data>::FindPointerToPredecessor(const Data& data) const {
     if (size == 0 || data <= head->val) return nullptr;
+    
     typename List<Data>::Node* current = head;
     typename List<Data>::Node* predecessor = nullptr;
+    
     while (current != nullptr && current->val < data) {
       predecessor = current;
       current = current->next;
     }
+    
     return predecessor;
   }
 
   template <typename Data>
   typename List<Data>::Node* SetLst<Data>::FindPointerToSuccessor(const Data& data) const {
     if (size == 0 || data >= tail->val) return nullptr;
+    
     typename List<Data>::Node* current = head;
     while (current != nullptr && current->val <= data) {
       current = current->next;
     }
+    
     return current;
   }
 

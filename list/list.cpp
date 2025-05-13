@@ -22,9 +22,7 @@ List<Data>::Node::Node(Node &&other) noexcept {
 }
 
 // Destructor
-template <typename Data> List<Data>::Node::~Node() {
-    delete next;
-}
+template <typename Data> List<Data>::Node::~Node() {}
 
 // Comparison operators
 template <typename Data>
@@ -85,9 +83,7 @@ template <typename Data> List<Data>::List(List &&l) {
 
 // Destructor
 template <typename Data> List<Data>::~List() {
-  delete head;
-  head = tail = nullptr;
-  size = 0;
+    Clear();
 }
 
 /* ************************************************************************** */
@@ -404,8 +400,13 @@ void List<Data>::PostOrderTraverse(TraverseFun fun, Node* current) const {
 
 template <typename Data>
 inline void List<Data>::Clear() {
-    delete head;
-    head = tail = nullptr;
+    while (head != nullptr) {
+        Node* tmp = head;
+        head = head->next;
+        tmp->next = nullptr;
+        delete tmp;
+    }
+    tail = nullptr;
     size = 0;
 }
 
