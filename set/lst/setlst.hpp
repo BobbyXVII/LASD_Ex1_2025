@@ -17,11 +17,14 @@ namespace lasd {
     protected:
         using Container::size;
         using List<Data>::head;
+        using List<Data>::tail;
 
         // Funzione ausiliaria per mantenere elementi ordinati
         void InsertInOrder(const Data &);
-
         void InsertInOrder(Data &&);
+
+        Data BackNRemove();
+        void RemoveFromBack();
 
     public:
         // Default constructor

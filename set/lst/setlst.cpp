@@ -15,7 +15,7 @@ namespace lasd {
     newNode->next = current->next;
     current->next = newNode;
     if (newNode->next == nullptr) {
-      List<Data>::tail = newNode;
+      tail = newNode;
     }
     size++;
   }
@@ -34,7 +34,7 @@ namespace lasd {
     newNode->next = current->next;
     current->next = newNode;
     if (newNode->next == nullptr) {
-      List<Data>::tail = newNode;
+      tail = newNode;
     }
     size++;
   }
@@ -118,7 +118,7 @@ namespace lasd {
   template <typename Data>
   const Data& SetLst<Data>::Max() const {
     if (size == 0) throw std::length_error("Empty set");
-    return List<Data>::tail->val;
+    return tail->val;
   }
 
   template <typename Data>
@@ -138,18 +138,18 @@ namespace lasd {
   Data SetLst<Data>::BackNRemove() {
     if (size == 0) throw std::length_error("Empty list");
 
-    Data value = List<Data>::tail->val;
+    Data value = tail->val;
 
-    if (head == List<Data>::tail) {
+    if (head == tail) {
       delete head;
-      head = List<Data>::tail = nullptr;
+      head = tail = nullptr;
     } else {
       typename List<Data>::Node* current = head;
-      while (current->next != List<Data>::tail) {
+      while (current->next != tail) {
         current = current->next;
       }
-      delete List<Data>::tail;
-      List<Data>::tail = current;
+      delete tail;
+      tail = current;
       current->next = nullptr;
     }
 
@@ -162,16 +162,16 @@ namespace lasd {
   void SetLst<Data>::RemoveFromBack() {
     if (size == 0) throw std::length_error("Empty list");
 
-    if (head == List<Data>::tail) {
+    if (head == tail) {
       delete head;
-      head = List<Data>::tail = nullptr;
+      head = tail = nullptr;
     } else {
       typename List<Data>::Node* current = head;
-      while (current->next != List<Data>::tail) {
+      while (current->next != tail) {
         current = current->next;
       }
-      delete List<Data>::tail;
-      List<Data>::tail = current;
+      delete tail;
+      tail = current;
       current->next = nullptr;
     }
 
@@ -201,8 +201,8 @@ namespace lasd {
         current = current->next;
       }
       current->next = pred->next;
-      if (pred == List<Data>::tail) {
-        List<Data>::tail = current;
+      if (pred == tail) {
+        tail = current;
       }
       delete pred;
       size--;
@@ -223,8 +223,8 @@ namespace lasd {
         current = current->next;
       }
       current->next = pred->next;
-      if (pred == List<Data>::tail) {
-        List<Data>::tail = current;
+      if (pred == tail) {
+        tail = current;
       }
       delete pred;
       size--;
@@ -253,8 +253,8 @@ namespace lasd {
         current = current->next;
       }
       current->next = succ->next;
-      if (succ == List<Data>::tail) {
-        List<Data>::tail = current;
+      if (succ == tail) {
+        tail = current;
       }
       delete succ;
       size--;
@@ -275,8 +275,8 @@ namespace lasd {
         current = current->next;
       }
       current->next = succ->next;
-      if (succ == List<Data>::tail) {
-        List<Data>::tail = current;
+      if (succ == tail) {
+        tail = current;
       }
       delete succ;
       size--;
@@ -312,8 +312,8 @@ namespace lasd {
     if (current->next == nullptr) return false;
     typename List<Data>::Node* temp = current->next;
     current->next = temp->next;
-    if (temp == List<Data>::tail) {
-      List<Data>::tail = current;
+    if (temp == tail) {
+      tail = current;
     }
     delete temp;
     size--;
@@ -328,7 +328,7 @@ namespace lasd {
 
   template <typename Data>
   typename List<Data>::Node* SetLst<Data>::FindPointerToMax() const {
-    return List<Data>::tail;
+    return tail;
   }
 
   template <typename Data>
@@ -345,7 +345,7 @@ namespace lasd {
 
   template <typename Data>
   typename List<Data>::Node* SetLst<Data>::FindPointerToSuccessor(const Data& data) const {
-    if (size == 0 || data >= List<Data>::tail->val) return nullptr;
+    if (size == 0 || data >= tail->val) return nullptr;
     typename List<Data>::Node* current = head;
     while (current != nullptr && current->val <= data) {
       current = current->next;
