@@ -4,36 +4,36 @@ namespace lasd {
     
     // Auxiliary protected functions
     template <typename Data>
-    ulong SetVec<Data>::FindIndex(const Data& data) const {
+    ulong SetVec<Data>::BinarySearch(const Data& data) const {
       if (size == 0 || Vector<Data>::elements == nullptr) {
-        return size;
+      return size;
       }
     
       ulong left = 0;
       ulong right = size - 1;
     
       while (left <= right) {
-        ulong mid = left + (right - left) / 2;
+      ulong mid = left + (right - left) / 2;
     
-        if (Vector<Data>::elements[mid] == data) {
-          return mid;
-        }
+      if (Vector<Data>::elements[mid] == data) {
+        return mid;
+      }
     
-        if (Vector<Data>::elements[mid] < data) {
-          left = mid + 1;
-        } else {
-          if (mid == 0) {
-            break;
-          }
-          right = mid - 1;
+      if (Vector<Data>::elements[mid] < data) {
+        left = mid + 1;
+      } else {
+        if (mid == 0) {
+        break;
         }
+        right = mid - 1;
+      }
       }
     
       return size;
     }
     
     template <typename Data>
-    ulong SetVec<Data>::FindInsertionIndex(const Data& data) const {
+    ulong SetVec<Data>::BinarySearchInsertion(const Data& data) const {
       if (size == 0 || Vector<Data>::elements == nullptr) {
         return 0;
       }
@@ -253,7 +253,7 @@ namespace lasd {
         throw std::length_error("Empty set");
       }
     
-      ulong index = FindInsertionIndex(data);
+      ulong index = BinarySearchInsertion(data);
     
       if (index == 0) {
         throw std::length_error("Predecessor not found");
@@ -268,7 +268,7 @@ namespace lasd {
         throw std::length_error("Empty set");
       }
     
-      ulong index = FindInsertionIndex(data);
+      ulong index = BinarySearchInsertion(data);
     
       if (index == 0) {
         throw std::length_error("Predecessor not found");
@@ -286,7 +286,7 @@ namespace lasd {
         throw std::length_error("Empty set");
       }
     
-      ulong index = FindInsertionIndex(data);
+      ulong index = BinarySearchInsertion(data);
     
       if (index == 0) {
         throw std::length_error("Predecessor not found");
@@ -301,7 +301,7 @@ namespace lasd {
         throw std::length_error("Empty set");
       }
     
-      ulong index = FindInsertionIndex(data);
+      ulong index = BinarySearchInsertion(data);
     
       if (index >= size || Vector<Data>::elements[index] == data) {
         if (index + 1 >= size) {
@@ -319,7 +319,7 @@ namespace lasd {
         throw std::length_error("Empty set");
       }
     
-      ulong index = FindInsertionIndex(data);
+      ulong index = BinarySearchInsertion(data);
     
       if (index >= size || Vector<Data>::elements[index] == data) {
         if (index + 1 >= size) {
@@ -340,7 +340,7 @@ namespace lasd {
         throw std::length_error("Empty set");
       }
     
-      ulong index = FindInsertionIndex(data);
+      ulong index = BinarySearchInsertion(data);
     
       if (index >= size || Vector<Data>::elements[index] == data) {
         if (index + 1 >= size) {
@@ -358,7 +358,7 @@ namespace lasd {
     template <typename Data>
     bool SetVec<Data>::Insert(const Data& data) {
         if (size > 0 && Vector<Data>::elements != nullptr) {
-            ulong index = FindInsertionIndex(data);
+            ulong index = BinarySearchInsertion(data);
             
             if (index < size && Vector<Data>::elements[index] == data) {
                 return false;
@@ -379,7 +379,7 @@ namespace lasd {
     template <typename Data>
     bool SetVec<Data>::Insert(Data&& data) {
       if (size > 0 && Vector<Data>::elements != nullptr) {
-        ulong index = FindInsertionIndex(data);
+        ulong index = BinarySearchInsertion(data);
     
         if (index < size && Vector<Data>::elements[index] == data) {
           return false;
@@ -402,7 +402,7 @@ namespace lasd {
         return false;
       }
     
-      ulong index = FindIndex(data);
+      ulong index = BinarySearch(data);
     
       if (index >= size) {
         return false;

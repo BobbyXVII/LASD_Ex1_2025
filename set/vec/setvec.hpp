@@ -22,7 +22,7 @@ namespace lasd {
         unsigned long capacity = 0; // Capacità allocata dell'array
 
         // Utility function to maintain sorted order
-        ulong FindIndex(const Data &) const;
+        ulong BinarySearch(const Data &) const;
 
     public:
         // Default constructor
@@ -119,7 +119,7 @@ namespace lasd {
 
     protected:
         // Auxiliary functions for InsertOrder
-        ulong FindInsertionIndex(const Data &) const;
+        ulong BinarySearchInsertion(const Data &) const;
 
         void ShiftRight(ulong);
 
