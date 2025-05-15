@@ -1,10 +1,12 @@
 namespace lasd {
 
-  // Auxiliary protected functions
+  /* ************************************************************************** */
+  /* Auxiliary protected functions                                              */
+  /* ************************************************************************** */
+
   template <typename Data>
   void SetLst<Data>::InsertInOrder(const Data& data) {
     if (size == 0 || data <= head->val) {
-      // Lascia che InsertAtFront gestisca incremento di size
       this->InsertAtFront(data);
       return;
     }
@@ -18,13 +20,12 @@ namespace lasd {
     if (newNode->next == nullptr) {
       tail = newNode;
     }
-    size++; // Solo qui incrementiamo size
+    size++;
   }
 
   template <typename Data>
   void SetLst<Data>::InsertInOrder(Data&& data) {
     if (size == 0 || data <= head->val) {
-      // Lascia che InsertAtFront gestisca incremento di size
       this->InsertAtFront(std::move(data));
       return;
     }
@@ -38,10 +39,14 @@ namespace lasd {
     if (newNode->next == nullptr) {
       tail = newNode;
     }
-    size++; // Solo qui incrementiamo size
+    size++;
   }
 
-  // Specific constructors
+  /* ************************************************************************** */
+  /* Specific Constructors                             */
+  /* ************************************************************************** */
+
+  // Construct from TraversableContainer
   template <typename Data>
   SetLst<Data>::SetLst(const TraversableContainer<Data>& container) {
     container.Traverse([this](const Data& data) {
@@ -49,6 +54,7 @@ namespace lasd {
     });
   }
 
+  // Construct from MappableContainer (move)
   template <typename Data>
   SetLst<Data>::SetLst(MappableContainer<Data>&& container) {
     container.Map([this](Data& data) {
@@ -56,10 +62,13 @@ namespace lasd {
     });
   }
 
+  /* ************************************************************************** */
+  /* Copy/move constructors                                                     */
+  /* ************************************************************************** */
+
   // Copy constructor
   template <typename Data>
   SetLst<Data>::SetLst(const SetLst<Data>& other) : List<Data>() {
-    // Utilizziamo la traversata per copiare gli elementi in ordine
     other.Traverse([this](const Data& data) {
       this->Insert(data);
     });
@@ -68,6 +77,10 @@ namespace lasd {
   // Move constructor
   template <typename Data>
   SetLst<Data>::SetLst(SetLst<Data>&& other) noexcept : List<Data>(std::move(other)) {}
+
+  /* ************************************************************************** */
+  /* Assignment operators                                                       */
+  /* ************************************************************************** */
 
   // Copy assignment
   template <typename Data>
@@ -88,7 +101,10 @@ namespace lasd {
     return *this;
   }
 
-  // Comparison operators
+  /* ************************************************************************** */
+  /* Comparison operators                                                       */
+  /* ************************************************************************** */
+
   template <typename Data>
   bool SetLst<Data>::operator==(const SetLst<Data>& other) const noexcept {
     return List<Data>::operator==(other);
@@ -99,7 +115,11 @@ namespace lasd {
     return !(*this == other);
   }
 
-  // Ordered Dictionary Functions
+  /* ************************************************************************** */
+  /* Ordered Dictionary Functions                                               */
+  /* ************************************************************************** */
+
+  // Min/Max functions
   template <typename Data>
   const Data& SetLst<Data>::Min() const {
     if (size == 0) throw std::length_error("Empty set");
@@ -136,7 +156,11 @@ namespace lasd {
     this->RemoveFromBack();
   }
 
-  // BackNRemove - Implementato qui perché manca in List
+  /* ************************************************************************** */
+  /* List Auxiliary operations                                                   */
+  /* ************************************************************************** */
+
+  // BackNRemove
   template <typename Data>
   Data SetLst<Data>::BackNRemove() {
     if (size == 0) throw std::length_error("Empty list");
@@ -160,7 +184,7 @@ namespace lasd {
     return value;
   }
 
-  // RemoveFromBack - Implementato qui perché manca in List
+  // RemoveFromBack
   template <typename Data>
   void SetLst<Data>::RemoveFromBack() {
     if (size == 0) throw std::length_error("Empty list");
@@ -181,7 +205,11 @@ namespace lasd {
     size--;
   }
 
-  // Successor/Predecessor
+  /* ************************************************************************** */
+  /* Successor/Predecessor operations                                           */
+  /* ************************************************************************** */
+
+  // Predecessor operations
   template <typename Data>
   const Data& SetLst<Data>::Predecessor(const Data& data) const {
     if (size == 0) throw std::length_error("Empty set");
@@ -198,9 +226,8 @@ namespace lasd {
     
     Data value = pred->val;
     
-    // Implementa la rimozione in modo sicuro
     if (pred == head) {
-      return this->FrontNRemove(); // Usa la funzione della classe base
+      return this->FrontNRemove();
     } else {
       typename List<Data>::Node* current = head;
       while (current->next != pred) {
@@ -222,9 +249,8 @@ namespace lasd {
     typename List<Data>::Node* pred = FindPointerToPredecessor(data);
     if (pred == nullptr) throw std::length_error("Predecessor not found");
     
-    // Implementa la rimozione in modo sicuro
     if (pred == head) {
-      this->RemoveFromFront(); // Usa la funzione della classe base
+      this->RemoveFromFront();
     } else {
       typename List<Data>::Node* current = head;
       while (current->next != pred) {
@@ -239,6 +265,7 @@ namespace lasd {
     }
   }
 
+  // Successor operations
   template <typename Data>
   const Data& SetLst<Data>::Successor(const Data& data) const {
     if (size == 0) throw std::length_error("Empty set");
@@ -255,9 +282,8 @@ namespace lasd {
     
     Data value = succ->val;
     
-    // Implementa la rimozione in modo sicuro
     if (succ == head) {
-      return this->FrontNRemove(); // Usa la funzione della classe base
+      return this->FrontNRemove();
     } else {
       typename List<Data>::Node* current = head;
       while (current->next != succ) {
@@ -279,9 +305,8 @@ namespace lasd {
     typename List<Data>::Node* succ = FindPointerToSuccessor(data);
     if (succ == nullptr) throw std::length_error("Successor not found");
     
-    // Implementa la rimozione in modo sicuro
     if (succ == head) {
-      this->RemoveFromFront(); // Usa la funzione della classe base
+      this->RemoveFromFront();
     } else {
       typename List<Data>::Node* current = head;
       while (current->next != succ) {
@@ -296,7 +321,11 @@ namespace lasd {
     }
   }
 
-  // DictionaryContainer
+  /* ************************************************************************** */
+  /* Dictionary Container                                                        */
+  /* ************************************************************************** */
+
+  // Insert operations
   template <typename Data>
   bool SetLst<Data>::Insert(const Data& data) {
     if (this->Exists(data)) return false;
@@ -311,6 +340,7 @@ namespace lasd {
     return true;
   }
 
+  // Remove operation
   template <typename Data>
   bool SetLst<Data>::Remove(const Data& data) {
     if (size == 0) return false;
@@ -338,7 +368,10 @@ namespace lasd {
     return true;
   }
 
-  // Auxiliaries
+  /* ************************************************************************** */
+  /* Auxiliary finder methods                           */
+  /* ************************************************************************** */
+
   template <typename Data>
   typename List<Data>::Node* SetLst<Data>::FindPointerToMin() const {
     return head;
@@ -378,11 +411,48 @@ namespace lasd {
 
   template <typename Data>
   typename List<Data>::Node* SetLst<Data>::FindPointerTo(const Data& data) const {
-    typename List<Data>::Node* current = head;
-    while (current != nullptr && current->val != data) {
-      current = current->next;
+    return BinarySearch(data);
+  }
+
+  /* ************************************************************************** */
+  /* Binary search auxiliary functions                         */
+  /* ************************************************************************** */
+
+  template <typename Data>
+  typename List<Data>::Node* SetLst<Data>::Reach(typename List<Data>::Node* startNode, unsigned int steps) const {
+    if (startNode == nullptr) return nullptr;
+    
+    typename List<Data>::Node* current = startNode;
+    for (unsigned int i = 0; i < steps && current != nullptr; ++i) {
+        current = current->next;
     }
     return current;
+  }
+
+  template <typename Data>
+  typename List<Data>::Node* SetLst<Data>::BinarySearch(const Data& data) const {
+    if (size == 0) return nullptr;
+    
+    unsigned int length = size;
+    typename List<Data>::Node* current = head;
+    
+    while (length > 0) {
+        unsigned int step = length / 2;
+        typename List<Data>::Node* mid = Reach(current, step);
+        
+        if (mid == nullptr) break;
+        
+        if (mid->val == data) {
+            return mid;
+        } else if (mid->val < data) {
+            current = mid->next;
+            length = length - step - 1;
+        } else {
+            length = step;
+        }
+    }
+    
+    return nullptr;  // Element not found
   }
 
 }

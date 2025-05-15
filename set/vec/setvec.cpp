@@ -1,6 +1,8 @@
 namespace lasd {
 
     /* ************************************************************************** */
+    /* Binary search utility functions                                            */
+    /* ************************************************************************** */
     
     // Auxiliary protected functions
     template <typename Data>
@@ -61,6 +63,10 @@ namespace lasd {
       return left;
     }
     
+    /* ************************************************************************** */
+    /* Array manipulation functions                                               */
+    /* ************************************************************************** */
+    
     // ShiftRight
     template <typename Data>
     void SetVec<Data>::ShiftRight(ulong index) {
@@ -112,8 +118,11 @@ namespace lasd {
         }
     }
     
-    // Specific constructors
+    /* ************************************************************************** */
+    /* Constructors                                                               */
+    /* ************************************************************************** */
     
+    // Specific constructors
     template <typename Data>
     SetVec<Data>::SetVec(const TraversableContainer<Data>& container) 
         : Vector<Data>(), capacity(0) {
@@ -142,6 +151,10 @@ namespace lasd {
         }
     }
     
+    /* ************************************************************************** */
+    /* Copy and move constructors                                                 */
+    /* ************************************************************************** */
+    
     template <typename Data>
     SetVec<Data>::SetVec(const SetVec<Data>& other)
         : Vector<Data>(other), capacity(other.capacity) {
@@ -152,6 +165,10 @@ namespace lasd {
         : Vector<Data>(std::move(other)), capacity(other.capacity) {
         other.capacity = 0;
     }
+    
+    /* ************************************************************************** */
+    /* Assignment operators                                                       */
+    /* ************************************************************************** */
     
     // Copy assignment
     template <typename Data>
@@ -174,7 +191,10 @@ namespace lasd {
         return *this;
     }
     
-    // Comparison operators
+    /* ************************************************************************** */
+    /* Comparison operators                                                       */
+    /* ************************************************************************** */
+    
     template <typename Data>
     bool SetVec<Data>::operator==(const SetVec<Data>& other) const noexcept {
       return Vector<Data>::operator==(other);
@@ -185,7 +205,9 @@ namespace lasd {
       return !(*this == other);
     }
     
-    // Specific member functions (inherited from OrderedDictionaryContainer)
+    /* ************************************************************************** */
+    /* Min/Max operations (OrderedDictionaryContainer)                            */
+    /* ************************************************************************** */
     
     template <typename Data>
     const Data& SetVec<Data>::Min() const {
@@ -247,6 +269,10 @@ namespace lasd {
       ShiftLeft(size - 1);
     }
     
+    /* ************************************************************************** */
+    /* Predecessor operations (OrderedDictionaryContainer)                        */
+    /* ************************************************************************** */
+    
     template <typename Data>
     const Data& SetVec<Data>::Predecessor(const Data& data) const {
       if (size == 0 || Vector<Data>::elements == nullptr) {
@@ -294,6 +320,10 @@ namespace lasd {
     
       ShiftLeft(index - 1);
     }
+    
+    /* ************************************************************************** */
+    /* Successor operations (OrderedDictionaryContainer)                          */
+    /* ************************************************************************** */
     
     template <typename Data>
     const Data& SetVec<Data>::Successor(const Data& data) const {
@@ -352,7 +382,9 @@ namespace lasd {
       ShiftLeft(index);
     }
     
-    // Specific member functions (inherited from DictionaryContainer)
+    /* ************************************************************************** */
+    /* Insert/Remove operations (DictionaryContainer)                             */
+    /* ************************************************************************** */
     
     // Insert
     template <typename Data>
@@ -388,7 +420,8 @@ namespace lasd {
         ShiftRight(index);
         Vector<Data>::elements[index] = std::move(data);
       } else {
-        Vector<Data>::elements = new Data[1];
+        capacity = 1;
+        Vector<Data>::elements = new Data[capacity]{};
         Vector<Data>::elements[0] = std::move(data);
         size = 1;
       }

@@ -130,6 +130,10 @@ namespace lasd {
         typename List<Data>::Node *FindPointerToSuccessor(const Data &) const;
 
         typename List<Data>::Node *FindPointerTo(const Data &) const;
+        
+        typename List<Data>::Node *Reach(typename List<Data>::Node* startNode, unsigned int steps) const;
+        
+        typename List<Data>::Node *BinarySearch(const Data& data) const;
     };
 
     /* ************************************************************************** */

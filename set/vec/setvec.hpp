@@ -18,11 +18,10 @@ namespace lasd {
     protected:
         using Container::size;
 
-        // Aggiungiamo solo questo campo
-        unsigned long capacity = 0; // Capacità allocata dell'array
+        unsigned long capacity = 0;
 
         // Utility function to maintain sorted order
-        ulong BinarySearch(const Data &) const;
+        ulong BinarySearch(const Data &) const;     // Finds a value in the array using binary search
 
     public:
         // Default constructor
@@ -118,8 +117,9 @@ namespace lasd {
         bool Remove(const Data &) override; // Override DictionaryContainer member
 
     protected:
+
         // Auxiliary functions for InsertOrder
-        ulong BinarySearchInsertion(const Data &) const;
+        ulong BinarySearchInsertion(const Data &) const; // Finds a position where a value should be inserted in the array
 
         void ShiftRight(ulong);
 
