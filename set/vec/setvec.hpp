@@ -19,6 +19,13 @@ namespace lasd {
         using Container::size;
 
         unsigned long capacity = 0;
+        unsigned long head = 0;
+        unsigned long tail = 0;
+
+        // Utility function for conversion
+        inline ulong physicalIndex(ulong logicalIndex) const {
+            return (head + logicalIndex) % capacity;
+        }
 
         // Utility function to maintain sorted order
         ulong BinarySearch(const Data &) const;     // Finds a value in the array using binary search

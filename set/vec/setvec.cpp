@@ -7,31 +7,32 @@ namespace lasd {
     // Auxiliary protected functions
     template <typename Data>
     ulong SetVec<Data>::BinarySearch(const Data& data) const {
-      if (size == 0 || Vector<Data>::elements == nullptr) {
-      return size;
-      }
-    
-      ulong left = 0;
-      ulong right = size - 1;
-    
-      while (left <= right) {
-      ulong mid = left + (right - left) / 2;
-    
-      if (Vector<Data>::elements[mid] == data) {
-        return mid;
-      }
-    
-      if (Vector<Data>::elements[mid] < data) {
-        left = mid + 1;
-      } else {
-        if (mid == 0) {
-        break;
+        if (size == 0 || Vector<Data>::elements == nullptr) {
+            return size;
         }
-        right = mid - 1;
-      }
-      }
-    
-      return size;
+        
+        ulong left = 0;
+        ulong right = size - 1;
+        
+        while (left <= right) {
+            ulong mid = left + (right - left) / 2;
+            ulong physMid = physicalIndex(mid);
+            
+            if (Vector<Data>::elements[physMid] == data) {
+                return mid; // Ritorna l'indice logico
+            }
+            
+            if (Vector<Data>::elements[physMid] < data) {
+                left = mid + 1;
+            } else {
+                if (mid == 0) {
+                    break;
+                }
+                right = mid - 1;
+            }
+        }
+        
+        return size;
     }
     
     template <typename Data>
@@ -69,25 +70,32 @@ namespace lasd {
     
     // ShiftRight
     template <typename Data>
-    void SetVec<Data>::ShiftRight(ulong index) {
-        if (size == capacity || Vector<Data>::elements == nullptr) {
-            capacity = (capacity == 0) ? 1 : capacity * 2;
+    void SetVec<Data>::ShiftRight(ulong logicalIndex) {
+        if (size >= capacity || Vector<Data>::elements == nullptr) {
+            ulong newCapacity = (capacity == 0) ? 1 : capacity * 2;
+            Data* newElements = new Data[newCapacity]{};
             
-            Data* newElements = new Data[capacity]{};
-            
-            for (ulong i = 0; i < index; i++) {
-                newElements[i] = Vector<Data>::elements[i];
-            }
-            
-            for (ulong i = size; i > index; i--) {
-                newElements[i] = Vector<Data>::elements[i-1];
+            for (ulong i = 0; i < size; i++) {
+                ulong oldPhysIdx = physicalIndex(i);
+                
+                if (i < logicalIndex) {
+                    newElements[i] = Vector<Data>::elements[oldPhysIdx];
+                } else {
+                    newElements[i + 1] = Vector<Data>::elements[oldPhysIdx];
+                }
             }
             
             delete[] Vector<Data>::elements;
             Vector<Data>::elements = newElements;
+            capacity = newCapacity;
+            head = 0;
+            tail = size + 1;
         } else {
-            for (ulong i = size; i > index; i--) {
-                Vector<Data>::elements[i] = Vector<Data>::elements[i-1];
+            tail = (tail + 1) % capacity;
+            
+            for (ulong i = size; i > logicalIndex; i--) {
+                Vector<Data>::elements[physicalIndex(i)] = 
+                    Vector<Data>::elements[physicalIndex(i-1)];
             }
         }
         
@@ -96,25 +104,30 @@ namespace lasd {
     
     // ShiftLeft
     template <typename Data>
-    void SetVec<Data>::ShiftLeft(ulong index) {
+    void SetVec<Data>::ShiftLeft(ulong logicalIndex) {
         if (size == 0) return;
         
-        for (ulong i = index; i < size - 1; i++) {
-            Vector<Data>::elements[i] = Vector<Data>::elements[i+1];
+        for (ulong i = logicalIndex; i < size - 1; i++) {
+            Vector<Data>::elements[physicalIndex(i)] = 
+                Vector<Data>::elements[physicalIndex(i+1)];
         }
         
+        tail = (tail - 1 + capacity) % capacity;
         size--;
         
         if (size > 0 && size <= capacity / 4 && capacity > 1) {
-            capacity = capacity / 2;
-            Data* newElements = new Data[capacity]{};
+            ulong newCapacity = capacity / 2;
+            Data* newElements = new Data[newCapacity]{};
             
             for (ulong i = 0; i < size; i++) {
-                newElements[i] = Vector<Data>::elements[i];
+                newElements[i] = Vector<Data>::elements[physicalIndex(i)];
             }
             
             delete[] Vector<Data>::elements;
             Vector<Data>::elements = newElements;
+            capacity = newCapacity;
+            head = 0;
+            tail = size;
         }
     }
     
@@ -211,11 +224,20 @@ namespace lasd {
     
     template <typename Data>
     const Data& SetVec<Data>::Min() const {
-      if (size == 0 || Vector<Data>::elements == nullptr) {
-        throw std::length_error("Empty set");
-      }
+        if (size == 0 || Vector<Data>::elements == nullptr) {
+            throw std::length_error("Empty set");
+        }
+        
+        return Vector<Data>::elements[head];
+    }
     
-      return Vector<Data>::elements[0];
+    template <typename Data>
+    const Data& SetVec<Data>::Max() const {
+        if (size == 0 || Vector<Data>::elements == nullptr) {
+            throw std::length_error("Empty set");
+        }
+        
+        return Vector<Data>::elements[physicalIndex(size - 1)];
     }
     
     template <typename Data>
@@ -237,15 +259,6 @@ namespace lasd {
       }
     
       ShiftLeft(0);
-    }
-    
-    template <typename Data>
-    const Data& SetVec<Data>::Max() const {
-      if (size == 0 || Vector<Data>::elements == nullptr) {
-        throw std::length_error("Empty set");
-      }
-    
-      return Vector<Data>::elements[size - 1];
     }
     
     template <typename Data>
